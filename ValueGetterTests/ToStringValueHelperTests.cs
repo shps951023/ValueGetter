@@ -15,22 +15,41 @@ namespace ValueGetterTests
     [Microsoft.VisualStudio.TestTools.UnitTesting.TestClass]
     public class ValueGetterTests
     {
-        private static MyClass _Data = new MyClass() { MyProperty1 = 123, MyProperty2 = "test" };
 
         [TestMethod]
-        public void ValueObjectHelper()
+        public void GetObjectValuesByObjectType()
         {
-            var result2 = _Data.GetToStringValues();
-
-            for (int i = 0; i < 3; i++)
+            object data = new MyClass() { MyProperty1 = 123, MyProperty2 = "test" }; 
+            for (int i = 0; i < 2; i++) /*for cache*/
             {
-                var data = _Data;
                 var result = data.GetObjectValues();
-                Assert.AreEqual(_Data.MyProperty1, result["MyProperty1"]);
-                Assert.AreEqual(_Data.MyProperty2, result["MyProperty2"]);
+                Assert.AreEqual((data as MyClass).MyProperty1, result["MyProperty1"]);
+                Assert.AreEqual((data as MyClass).MyProperty2, result["MyProperty2"]);
             }
-
         }
 
+        [TestMethod]
+        public void GetObjectValuesStrongType()
+        {
+            var data = new MyClass() { MyProperty1 = 123, MyProperty2 = "test" };
+            for (int i = 0; i < 2; i++) /*for cache*/
+            {
+                var result = data.GetObjectValues();
+                Assert.AreEqual((data).MyProperty1, result["MyProperty1"]);
+                Assert.AreEqual((data).MyProperty2, result["MyProperty2"]);
+            }
+        }
+
+        [TestMethod]
+        public void GetObjectValuesToStringStrongType()
+        {
+            object data = new MyClass() { MyProperty1 = 123, MyProperty2 = "test" };
+            for (int i = 0; i < 2; i++) /*for cache*/
+            {
+                var result = data.GetToStringValues();
+                //Assert.AreEqual((data).MyProperty1, result["MyProperty1"]);
+                //Assert.AreEqual((data).MyProperty2, result["MyProperty2"]);
+            }
+        }
     }
 }

@@ -33,6 +33,10 @@ namespace BenchmarkTest
     {
         private static List<MyClass> _Data = Enumerable.Range(1,100)
             .Select(s=>new MyClass() { MyProperty1 = 123, MyProperty2 = "test" }).ToList();
+        private static List<object> _Data2 = Enumerable.Range(1, 100)
+            .Select(s => (object)new MyClass() { MyProperty1 = 123, MyProperty2 = "test" }).ToList();
+        private static List<object> _Data3 = Enumerable.Range(1, 100)
+            .Select(s => null as object).ToList();
 
         [Benchmark()]
         public  void Reflection() => _Data.Select(s=> s.GetObjectValuesByReflection()).ToList();
@@ -42,6 +46,12 @@ namespace BenchmarkTest
         public  void CompilerFunctionAndCache() => _Data.Select(s => s.GetObjectValues()).ToList();
         [Benchmark()]
         public void CompilerAndCacheAndToString() => _Data.Select(s => s.GetToStringValues()).ToList();
+        [Benchmark()]
+        public void CompilerFunctionAndCacheAndDynamicType() => _Data2.Select(s => s.GetObjectValues()).ToList();
+        [Benchmark()]
+        public void CompilerAndCacheAndToStringAndDynamicType() => _Data2.Select(s => s.GetToStringValues()).ToList();
+        [Benchmark()]
+        public void Null() => _Data3.Select(s => s.GetObjectValues()).ToList();
     }
 
     public class Config : ManualConfig
