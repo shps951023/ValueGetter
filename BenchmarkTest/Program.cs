@@ -3,6 +3,7 @@ using BenchmarkDotNet.Exporters;
 using BenchmarkDotNet.Loggers;
 using BenchmarkDotNet.Running;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using ValueGetter;
@@ -15,6 +16,7 @@ using BenchmarkDotNet.Jobs;
 using BenchmarkDotNet.Loggers;
 using BenchmarkDotNet.Order;
 using BenchmarkDotNet.Attributes;
+
 
 namespace BenchmarkTest
 {
@@ -29,14 +31,17 @@ namespace BenchmarkTest
 
     public class BenchmarkBase
     {
-        private static MyClass _Data = new MyClass() { MyProperty1 = 123, MyProperty2 = "test" };
+        private static List<MyClass> _Data = Enumerable.Range(1,100)
+            .Select(s=>new MyClass() { MyProperty1 = 123, MyProperty2 = "test" }).ToList();
 
         [Benchmark()]
-        public  void Reflection() => _Data.GetObjectValuesByReflection();
+        public  void Reflection() => _Data.Select(s=> s.GetObjectValuesByReflection()).ToList();
         [Benchmark()]
-        public  void ReflectionCacheProperties() => _Data.GetObjectValuesByReflectionCache();
+        public  void ReflectionCacheProperties() => _Data.Select(s => s.GetObjectValuesByReflectionCache()).ToList(); 
         [Benchmark()]
-        public  void EmitCache() => _Data.GetObjectValues();
+        public  void CompilerFunctionAndCache() => _Data.Select(s => s.GetObjectValues()).ToList();
+        [Benchmark()]
+        public void CompilerAndCacheAndToString() => _Data.Select(s => s.GetToStringValues()).ToList();
     }
 
     public class Config : ManualConfig
@@ -81,6 +86,7 @@ namespace BenchmarkTest
     {
         public static Dictionary<string, object> GetObjectValuesByReflection<T>(this T instance)
         {
+            if (instance == null) return null;
             var type = instance.GetType();
             var props = type.GetProperties();
             return props.ToDictionary(key => key.Name, value => value.GetValue(instance));
@@ -88,6 +94,7 @@ namespace BenchmarkTest
 
         public static Dictionary<string, object> GetObjectValuesByReflectionCache<T>(this T instance)
         {
+            if (instance == null) return null;
             var type = instance.GetType();
             var props = type.GetPropertiesFromCache();
             return props.ToDictionary(key => key.Name, value => value.GetValue(instance));

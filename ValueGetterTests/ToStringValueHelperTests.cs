@@ -20,9 +20,16 @@ namespace ValueGetterTests
         [TestMethod]
         public void ValueObjectHelper()
         {
-            var result = _Data.GetObjectValues();
-            Assert.AreEqual(_Data.MyProperty1, result["MyProperty1"]);
-            Assert.AreEqual(_Data.MyProperty2, result["MyProperty2"]);
+            var result2 = _Data.GetToStringValues();
+
+            for (int i = 0; i < 3; i++)
+            {
+                var data = _Data;
+                var result = data.GetObjectValues();
+                Assert.AreEqual(_Data.MyProperty1, result["MyProperty1"]);
+                Assert.AreEqual(_Data.MyProperty2, result["MyProperty2"]);
+            }
+
         }
 
     }
