@@ -3,11 +3,24 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.421
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ValueGetter", "ValueGetter\ValueGetter.csproj", "{C9F839AA-251B-494C-8215-6FD6E4E130CB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ValueGetter", "ValueGetter\ValueGetter.csproj", "{C9F839AA-251B-494C-8215-6FD6E4E130CB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ValueGetterTests", "ValueGetterTests\ValueGetterTests.csproj", "{A972056B-E6D4-4A59-8E0E-04884AC72A9C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ValueGetterTests", "ValueGetterTests\ValueGetterTests.csproj", "{A972056B-E6D4-4A59-8E0E-04884AC72A9C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BenchmarkTest", "BenchmarkTest\BenchmarkTest.csproj", "{9D45965E-3965-48BF-9FD4-617A98808391}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BenchmarkTest", "BenchmarkTest\BenchmarkTest.csproj", "{9D45965E-3965-48BF-9FD4-617A98808391}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{FAA21525-3E45-4B2E-9B27-7C13E0725F70}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{3F740C74-981F-4CAD-83A3-E25E61A1720E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A466051E-512C-4E10-8BE6-37C9C94F0D1E}"
+	ProjectSection(SolutionItems) = preProject
+		.gitattributes = .gitattributes
+		.gitignore = .gitignore
+		LICENSE = LICENSE
+		Readme.md = Readme.md
+		Readme_zh-cn.md = Readme_zh-cn.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -30,6 +43,11 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{C9F839AA-251B-494C-8215-6FD6E4E130CB} = {3F740C74-981F-4CAD-83A3-E25E61A1720E}
+		{A972056B-E6D4-4A59-8E0E-04884AC72A9C} = {FAA21525-3E45-4B2E-9B27-7C13E0725F70}
+		{9D45965E-3965-48BF-9FD4-617A98808391} = {FAA21525-3E45-4B2E-9B27-7C13E0725F70}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5D4B9CF2-6C02-4F03-9CA3-BA18AC17339A}

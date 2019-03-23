@@ -19,38 +19,70 @@ namespace ValueGetterTests
     {
 
         [TestMethod]
-        public void GetObjectValuesByObjectType()
-        {
-            object data = new MyClass() { MyProperty1 = 123, MyProperty2 = "test" };
-            for (int i = 0; i < 2; i++) /*for cache*/
-            {
-                var result = data.GetObjectValues();
-                Assert.AreEqual((data as MyClass).MyProperty1, result["MyProperty1"]);
-                Assert.AreEqual((data as MyClass).MyProperty2, result["MyProperty2"]);
-            }
-        }
-
-        [TestMethod]
-        public void GetObjectValuesStrongType()
+        public void ObjectGetValues()
         {
             var data = new MyClass() { MyProperty1 = 123, MyProperty2 = "test" };
-            for (int i = 0; i < 2; i++) /*for cache*/
-            {
-                var result = data.GetObjectValues();
-                Assert.AreEqual((data).MyProperty1, result["MyProperty1"]);
-                Assert.AreEqual((data).MyProperty2, result["MyProperty2"]);
-            }
+            var result = data.GetObjectValues();
+            Assert.AreEqual(123, result["MyProperty1"]);
+            Assert.AreEqual("test", result["MyProperty2"]);
         }
 
         [TestMethod]
-        public void GetObjectValuesToStringStrongType()
+        public void ObjectGetToStringValues()
         {
-            object data = new  { MyProperty1 = 123, MyProperty2 = "test" };
-            for (int i = 0; i < 2; i++) /*for cache*/
+            var data = new MyClass() { MyProperty1 = 123, MyProperty2 = "test" };
+            var result = data.GetToStringValues();
+            Assert.AreEqual("123", result["MyProperty1"]);
+            Assert.AreEqual("test", result["MyProperty2"]);
+        }
+
+        [TestMethod]
+        public void PropertyGetValue()
+        {
+            var data = new MyClass() { MyProperty1 = 123 };
+            var prop = data.GetType().GetProperty("MyProperty1");
+            var result = prop.GetObjectValue(data);
+            Assert.AreEqual(123, result);
+        }
+
+        [TestMethod]
+        public void PropertyGetToStringValue()
+        {
+            var data = new MyClass() { MyProperty1 = 123 };
+            var prop = data.GetType().GetProperty("MyProperty1");
+            var result = prop.GetToStringValue(data);
+            Assert.AreEqual("123", result);
+        }
+
+        [TestMethod]
+        public void CacheTest()
+        {
             {
-                var result = data.GetToStringValues();
-                Assert.AreEqual("123", result["MyProperty1"]);
-                Assert.AreEqual("test", result["MyProperty2"]);
+                object data = new MyClass() { MyProperty1 = 123, MyProperty2 = "test" };
+                for (int i = 0; i < 2; i++) /*for cache*/
+                {
+                    var result = data.GetObjectValues();
+                    Assert.AreEqual((data as MyClass).MyProperty1, result["MyProperty1"]);
+                    Assert.AreEqual((data as MyClass).MyProperty2, result["MyProperty2"]);
+                }
+            }
+            {
+                var data = new MyClass() { MyProperty1 = 123, MyProperty2 = "test" };
+                for (int i = 0; i < 2; i++) /*for cache*/
+                {
+                    var result = data.GetObjectValues();
+                    Assert.AreEqual((data).MyProperty1, result["MyProperty1"]);
+                    Assert.AreEqual((data).MyProperty2, result["MyProperty2"]);
+                }
+            }
+            {
+                object data = new { MyProperty1 = 123, MyProperty2 = "test" };
+                for (int i = 0; i < 2; i++) /*for cache*/
+                {
+                    var result = data.GetToStringValues();
+                    Assert.AreEqual("123", result["MyProperty1"]);
+                    Assert.AreEqual("test", result["MyProperty2"]);
+                }
             }
         }
 
@@ -89,7 +121,6 @@ namespace ValueGetterTests
                 //var result = prop.GetValue(data); //System.Reflection.TargetException: 'Non-static method requires a target.'
                 var result =  prop.GetObjectValue(data);
             }
-            
         }
     }
 }
