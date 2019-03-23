@@ -23,8 +23,7 @@ namespace ValueGetter
         public static string GetToStringValue<T>(this PropertyInfo propertyInfo, T instance)
             => instance != null ? ValueGetterCache<T, string>.GetOrAddToStringFuntionCache(propertyInfo)(instance) : null;
     }
-
-    //GetObjectValue generic with object version, this arrangement can avoid Compiler exception error
+    
     public static partial class ValueGetter
     {
         /// <summary>
@@ -52,20 +51,10 @@ namespace ValueGetter
     {
         internal static Func<TParam, TReturn> GetOrAddFunctionCache(PropertyInfo propertyInfo)
         {
-            //it's too slow : var key =  $"{call}|{propertyInfo.DeclaringType.TypeHandle.Value.ToString()}|{propertyInfo.MetadataToken.ToString()}";
             var key = propertyInfo.MetadataToken;
             if (Functions.TryGetValue(key, out Func<TParam, TReturn> func))
                 return func;
             return (Functions[key] = GetCastObjectFunction(propertyInfo));
-        }
-
-        private static Func<TParam, TReturn> GetFunction(PropertyInfo prop)
-        {
-            var instance = Expression.Parameter(prop.DeclaringType, "i");
-            var property = Expression.Property(instance, prop);
-            var convert = Expression.TypeAs(property, typeof(TReturn));
-            var lambda = Expression.Lambda<Func<TParam, TReturn>>(convert, instance);
-            return lambda.Compile();
         }
 
         private static Func<TParam, TReturn> GetCastObjectFunction(PropertyInfo prop)
@@ -87,19 +76,6 @@ namespace ValueGetter
             if (ToStringFunctions.TryGetValue(key, out Func<TParam, TReturn> func))
                 return func;
             return (ToStringFunctions[key] = GetCastObjectAndToStringFunction(propertyInfo));
-        }
-
-        private static Func<TParam, TReturn> GetToStringFunction(PropertyInfo prop)
-        {
-            var propType = prop.PropertyType;
-            var toStringMethod = propType.GetMethods(BindingFlags.Public | BindingFlags.Instance).Where(p => p.Name == "ToString").First();
-
-            var instance = Expression.Parameter(prop.DeclaringType, "i");
-            var property = Expression.Property(instance, prop);
-            var tostring = Expression.Call(property, toStringMethod);
-            var lambda = Expression.Lambda<Func<TParam, TReturn>>(tostring, instance);
-
-            return lambda.Compile();
         }
 
         private static Func<TParam, TReturn> GetCastObjectAndToStringFunction(PropertyInfo prop)

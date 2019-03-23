@@ -5,6 +5,12 @@
 
 ---
 
+### Feature:
+- Mini (you can just copy/paste a [ValueGetter.cs](ValueGetter/ValueGetter.cs) file to project)
+- Without dependency
+- Faster Than Reflection GeValue (Click To [BenchmarkDotNet])
+- Support `net40;net45;netstandard2.0;` frameworks
+
 ### GetStart:
 
 Get all the property values of object, return `Dictionary<string,object>` type

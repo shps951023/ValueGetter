@@ -1,9 +1,14 @@
 ﻿
 
-[英文](Readme.md) | [繁體中文](Readme_zh-cn.md) | [简体中文](Readme_cn.md) 
-
+[English](Readme.md) | [中文](Readme_zh-cn.md) 
 
 ---
+
+### Feature:
+- 輕量 (只需要複製貼上 [ValueGetter.cs](ValueGetter/ValueGetter.cs) 到你的專案)
+- 沒有第三方套件依賴
+- 比Reflection GeValue效率高(查看 [BenchmarkDotNet] )
+- 支援版本 `net40;net45;netstandard2.0;` frameworks
 
 ### 使用方式:
 
