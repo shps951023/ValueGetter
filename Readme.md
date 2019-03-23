@@ -34,38 +34,38 @@ dotnet add package ValueGetter
 
 Get all the property values of object, return `Dictionary<string,object>` type
 ```C#
-var data = new MyClass() { MyProperty1 = 123, MyProperty2 = "test" };
-var result = data.GetObjectValues();
-
-Assert.AreEqual(123, result["MyProperty1"]);
-Assert.AreEqual("test", result["MyProperty2"]);
+    var data = new MyClass() { MyProperty1 = 123, MyProperty2 = "test" };
+    var result = data.GetObjectValues();
+    //Result:
+    Assert.AreEqual(123, result["MyProperty1"]);
+    Assert.AreEqual("test", result["MyProperty2"]);
 ```
 
 Get all properties ToString value of the object, return `Dictionary<string,string>` type
 ```C#
-var data = new MyClass() { MyProperty1 = 123, MyProperty2 = "test" };
-var result = data.GetToStringValues();
-
-Assert.AreEqual("123", result["MyProperty1"]);
-Assert.AreEqual("test", result["MyProperty2"]);
+    var data = new MyClass() { MyProperty1 = 123, MyProperty2 = "test" };
+    var result = data.GetToStringValues();
+    //Result:
+    Assert.AreEqual("123", result["MyProperty1"]);
+    Assert.AreEqual("test", result["MyProperty2"]);
 ```
 
 Get single property value of object,return `object` type.
 ```C#
-var data = new MyClass() { MyProperty1 = 123 };
-var prop = data.GetType().GetProperty("MyProperty1");
-
-var result = prop.GetObjectValue(data);
-Assert.AreEqual(123, result);
+    var data = new MyClass() { MyProperty1 = 123 };
+    var prop = data.GetType().GetProperty("MyProperty1");
+    var result = prop.GetObjectValue(data);
+    //Result:
+    Assert.AreEqual(123, result);
 ```
 
 Get single property ToString value of object,return `string` type.
 ```C#
-var data = new MyClass() { MyProperty1 = 123 };
-var prop = data.GetType().GetProperty("MyProperty1");
-var result = prop.GetToStringValue(data);
-
-Assert.AreEqual("123", result);
+    var data = new MyClass() { MyProperty1 = 123 };
+    var prop = data.GetType().GetProperty("MyProperty1");
+    var result = prop.GetToStringValue(data);
+    //Result:
+    Assert.AreEqual("123", result);
 ```
 
 
