@@ -6,10 +6,10 @@ using System.Reflection;
 
 namespace ValueGetter
 {
-    internal partial class ValueGetterCache<T, TReturn>
+    internal partial class ValueGetterCache<TParam, TReturn>
     {
 
-        private static Func<T, TReturn> GetToStringFunction(PropertyInfo prop)
+        private static Func<TParam, TReturn> GetToStringFunction(PropertyInfo prop)
         {
             var propType = prop.PropertyType;
             var toStringMethod = propType.GetMethods(BindingFlags.Public | BindingFlags.Instance).Where(p => p.Name == "ToString").First();
@@ -17,22 +17,22 @@ namespace ValueGetter
             var instance = Expression.Parameter(prop.DeclaringType, "i");
             var property = Expression.Property(instance, prop);
             var tostring = Expression.Call(property, toStringMethod);
-            var lambda = Expression.Lambda<Func<T, TReturn>>(tostring, instance);
+            var lambda = Expression.Lambda<Func<TParam, TReturn>>(tostring, instance);
 
             return lambda.Compile();
         }
 
 
-        private static Func<T, TReturn> GetObjectToStringFunction(PropertyInfo prop)
+        private static Func<TParam, TReturn> GetObjectToStringFunction(PropertyInfo prop)
         {
             var propType = prop.PropertyType;
             var toStringMethod = propType.GetMethods(BindingFlags.Public | BindingFlags.Instance).Where(p => p.Name == "ToString").First();
 
-            var instance = Expression.Parameter(typeof(T), "i");
+            var instance = Expression.Parameter(typeof(TParam), "i");
             var convert = Expression.TypeAs(instance, prop.DeclaringType);
             var property = Expression.Property(convert, prop);
             var tostring = Expression.Call(property, toStringMethod);
-            var lambda = Expression.Lambda<Func<T, TReturn>>(tostring, instance);
+            var lambda = Expression.Lambda<Func<TParam, TReturn>>(tostring, instance);
 
             return lambda.Compile();
         }
@@ -52,7 +52,12 @@ namespace ValueGetter
         /// <code>string GetterFunction(MyClass i) => i.MyProperty1.ToString() ; </code>
         /// </summary>
         public static string GetToStringValue<T>(this PropertyInfo propertyInfo, T instance)
-            => ValueGetterCache<T, String>.GetOrAddCache(Method.ToString, propertyInfo)(instance);
+        {
+            if (propertyInfo.DeclaringType == typeof(T))    /* avoid using the upcast variable  get error results */
+                return ValueGetterCache<T, String>.GetOrAddCache(Method.ToString, propertyInfo)(instance);
+            else
+                return ValueGetterCache<object, String>.GetOrAddCache(Method.ToStringByDynamic, propertyInfo)(instance);
+        }
 
         /// <summary>
         /// Compiler Method Like:

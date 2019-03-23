@@ -4,7 +4,11 @@ using ValueGetter;
 
 namespace ValueGetterTests
 {
-    public class MyClass
+    public interface IMy 
+    {
+    }
+
+    public class MyClass:IMy
     {
         public int MyProperty1 { get; set; }
         public string MyProperty2 { get; set; }
@@ -47,6 +51,31 @@ namespace ValueGetterTests
                 var result = data.GetToStringValues();
                 Assert.AreEqual("123", result["MyProperty1"]);
                 Assert.AreEqual("test", result["MyProperty2"]);
+            }
+        }
+
+        /// <summary>
+        /// Fix:Using the upcast variable results in the following error
+        /// <![CDATA[
+        ///    var data1 = new MyClass { MyProperty1 = 123, MyProperty2 = "test" };
+        ///    IMy data2 = new MyClass { MyProperty1 = 123, MyProperty2 = "test" };
+        /// ]]>
+        /// Error:System.ArgumentException: 'ParameterExpression of type 'ValueGetterTests.MyClass' 
+        /// cannot be used for delegate parameter of type 'ValueGetterTests.IMy''
+        /// </summary>
+        [TestMethod]
+        public void GetObjectValuesToStringStrongType2()
+        {
+            var data1 = new MyClass { MyProperty1 = 123, MyProperty2 = "test" };
+            IMy data2 = new MyClass { MyProperty1 = 123, MyProperty2 = "test" };
+            for (int i = 0; i < 2; i++) /*for cache*/
+            {
+                var result = data1.GetToStringValues();
+                Assert.AreEqual("123", result["MyProperty1"]);
+                Assert.AreEqual("test", result["MyProperty2"]);
+                var result2 = data2.GetToStringValues();
+                Assert.AreEqual("123", result2["MyProperty1"]);
+                Assert.AreEqual("test", result2["MyProperty2"]);
             }
         }
     }
