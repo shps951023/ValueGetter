@@ -7,28 +7,57 @@ using System.Reflection;
 
 namespace ValueGetter
 {
-
+    [Flags]
     internal enum Method
     {
         ToString, ToStringByDynamic, CastObject, CastObjectByDynamic
     }
 
-    public partial class ValueObjectCache<T, TReturn>
+    internal partial class ValueGetterCache<T, TReturn>
     {
-        private static readonly ConcurrentDictionary<int, Func<T, TReturn>> _Functions = new ConcurrentDictionary<int, Func<T, TReturn>>();
+        private static readonly ConcurrentDictionary<int, Func<T, TReturn>> _ToStringFunctions
+            = new ConcurrentDictionary<int, Func<T, TReturn>>();
+        private static readonly ConcurrentDictionary<int, Func<T, TReturn>> _ToStringByDynamicFunctions
+            = new ConcurrentDictionary<int, Func<T, TReturn>>();
+        private static readonly ConcurrentDictionary<int, Func<T, TReturn>> _CastObjectFunctions
+            = new ConcurrentDictionary<int, Func<T, TReturn>>();
+        private static readonly ConcurrentDictionary<int, Func<T, TReturn>> _CastObjectByDynamicFunctions
+            = new ConcurrentDictionary<int, Func<T, TReturn>>();
+
         internal static Func<T, TReturn> GetOrAddCache(Method call, PropertyInfo propertyInfo)
         {
+            //it's too slow 
+            //var key =  $"{call}|{propertyInfo.DeclaringType.TypeHandle.Value.ToString()}|{propertyInfo.MetadataToken.ToString()}";
             var key = propertyInfo.MetadataToken;
-            if (_Functions.TryGetValue(key, out Func<T, TReturn> func))
-                return func;
 
             if (call == Method.ToString)
-                return (_Functions[key] = GetToStringFunction(propertyInfo));
-            if (call == Method.ToStringByDynamic)
-                return (_Functions[key] = GetDynamicToStringFunction(propertyInfo));
-            if (call == Method.CastObjectByDynamic)
-                return (_Functions[key] = GetDynamicFunction(propertyInfo));
-            return (_Functions[key] = GetFunction(propertyInfo));
+            {
+                var functions = _ToStringFunctions;
+                if (functions.TryGetValue(key, out Func<T, TReturn> func))
+                    return func;
+                return (functions[key] = GetToStringFunction(propertyInfo));
+            }
+            else if (call == Method.ToStringByDynamic)
+            {
+                var functions = _ToStringByDynamicFunctions;
+                if (functions.TryGetValue(key, out Func<T, TReturn> func))
+                    return func;
+                return (functions[key] = GetObjectToStringFunction(propertyInfo));
+            }
+            else if (call == Method.CastObjectByDynamic)
+            {
+                var functions = _CastObjectByDynamicFunctions;
+                if (functions.TryGetValue(key, out Func<T, TReturn> func))
+                    return func;
+                return (functions[key] = GetObjectFunction(propertyInfo));
+            }
+
+            {
+                var functions = _CastObjectFunctions;
+                if (functions.TryGetValue(key, out Func<T, TReturn> func))
+                    return func;
+                return (functions[key] = GetFunction(propertyInfo));
+            }
         }
 
         private static Func<T, TReturn> GetFunction(PropertyInfo prop)
@@ -40,7 +69,7 @@ namespace ValueGetter
             return lambda.Compile();
         }
 
-        private static Func<T, TReturn> GetDynamicFunction(PropertyInfo prop)
+        private static Func<T, TReturn> GetObjectFunction(PropertyInfo prop)
         {
             var instance = Expression.Parameter(typeof(TReturn), "i");
             var convert = Expression.TypeAs(instance, prop.DeclaringType);
@@ -52,31 +81,35 @@ namespace ValueGetter
     }
 
     //GetObjectValue generic with object version, this arrangement can avoid Compiler exception error
-    public static partial class ValueObjectHelper
+    public static partial class ValueGetter
     {
         /// <summary>
-        /// compiler like : object GetterFunction(MyClass i) => i.MyProperty1 as object ; 
+        /// Compiler Method Like:
+        /// <code>object GetterFunction(MyClass i) => i.MyProperty1 as object ; </code>
         /// </summary>
-        public static Dictionary<string, object> GetObjectValues<T>(this T instance) => instance == null
-                ? null
-                : instance.GetType().GetPropertiesFromCache().ToDictionary(key => key.Name, value => value.GetObjectValue(instance));
+        public static Dictionary<string, object> GetObjectValues<T>(this T instance)
+            => instance?.GetType().GetPropertiesFromCache().ToDictionary(key => key.Name, value => value.GetObjectValue(instance));
 
         /// <summary>
-        /// compiler like : object GetterFunction(MyClass i) => i.MyProperty1 as object ; 
+        /// Compiler Method Like:
+        /// <code>object GetterFunction(MyClass i) => i.MyProperty1 as object ; </code>
         /// </summary>
-        public static object GetObjectValue<T>(this PropertyInfo propertyInfo, T instance) => ValueObjectCache<T, object>.GetOrAddCache(Method.CastObject, propertyInfo)(instance);
+        public static object GetObjectValue<T>(this PropertyInfo propertyInfo, T instance)
+            => ValueGetterCache<T, object>.GetOrAddCache(Method.CastObject, propertyInfo)(instance);
 
         /// <summary>
-        /// compiler like : object GetterFunction(object i) => (i as MyClass).MyProperty1 as object ; 
+        /// Compiler Method Like:
+        /// <code>object GetterFunction(object i) => (i as MyClass).MyProperty1 as object ; </code>
         /// </summary>
-        public static Dictionary<string, object> GetObjectValues(this object instance) => instance == null 
-            ? null 
-            : instance.GetType().GetPropertiesFromCache().ToDictionary(key => key.Name, value => value.GetObjectValue(instance));
+        public static Dictionary<string, object> GetObjectValues(this object instance)
+            => instance?.GetType().GetPropertiesFromCache().ToDictionary(key => key.Name, value => value.GetObjectValue(instance));
 
         /// <summary>
-        /// compiler like : object GetterFunction(object i) => (i as MyClass).MyProperty1 as object ;
+        /// Compiler Method Like:
+        /// <code>object GetterFunction(object i) => (i as MyClass).MyProperty1 as object ;</code>
         /// </summary>
-        public static object GetObjectValue(this PropertyInfo propertyInfo, object instance) => ValueObjectCache<object, object>.GetOrAddCache(Method.CastObjectByDynamic, propertyInfo)(instance);
+        public static object GetObjectValue(this PropertyInfo propertyInfo, object instance)
+            => ValueGetterCache<object, object>.GetOrAddCache(Method.CastObjectByDynamic, propertyInfo)(instance);
     }
 }
 

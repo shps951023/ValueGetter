@@ -1,7 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using ValueGetter;
 
 namespace ValueGetterTests
@@ -19,7 +17,7 @@ namespace ValueGetterTests
         [TestMethod]
         public void GetObjectValuesByObjectType()
         {
-            object data = new MyClass() { MyProperty1 = 123, MyProperty2 = "test" }; 
+            object data = new MyClass() { MyProperty1 = 123, MyProperty2 = "test" };
             for (int i = 0; i < 2; i++) /*for cache*/
             {
                 var result = data.GetObjectValues();
@@ -43,12 +41,12 @@ namespace ValueGetterTests
         [TestMethod]
         public void GetObjectValuesToStringStrongType()
         {
-            object data = new MyClass() { MyProperty1 = 123, MyProperty2 = "test" };
+            object data = new  { MyProperty1 = 123, MyProperty2 = "test" };
             for (int i = 0; i < 2; i++) /*for cache*/
             {
                 var result = data.GetToStringValues();
-                //Assert.AreEqual((data).MyProperty1, result["MyProperty1"]);
-                //Assert.AreEqual((data).MyProperty2, result["MyProperty2"]);
+                Assert.AreEqual("123", result["MyProperty1"]);
+                Assert.AreEqual("test", result["MyProperty2"]);
             }
         }
     }
