@@ -64,7 +64,7 @@ namespace ValueGetterTests
         /// cannot be used for delegate parameter of type 'ValueGetterTests.IMy''
         /// </summary>
         [TestMethod]
-        public void GetObjectValuesToStringStrongType2()
+        public void IssueForUpcastError()
         {
             var data1 = new MyClass { MyProperty1 = 123, MyProperty2 = "test" };
             IMy data2 = new MyClass { MyProperty1 = 123, MyProperty2 = "test" };
