@@ -4,11 +4,30 @@
 
 ---
 
+[![NuGet](https://img.shields.io/nuget/v/ValueGetter.svg)](https://www.nuget.org/packages/ValueGetter)
+![](https://img.shields.io/nuget/dt/ValueGetter.svg)
+
+---
+
 ### Feature:
 - 輕量 (只需要複製貼上 [ValueGetter.cs](ValueGetter/ValueGetter.cs) 到你的專案)
 - 沒有第三方套件依賴
 - 比Reflection GeValue效率高(查看 [BenchmarkDotNet] )
 - 支援版本 `net40;net45;netstandard2.0;` frameworks
+
+### 安裝
+
+You can install the package [from NuGet](https://www.nuget.org/packages/ValueGetter) using the Visual Studio Package Manager or NuGet UI:
+
+```cmd
+PM> install-package ValueGetter
+```
+
+or the `dotnet` command line:
+
+```cmd
+dotnet add package ValueGetter
+```
 
 ### 使用方式:
 

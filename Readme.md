@@ -5,11 +5,30 @@
 
 ---
 
+[![NuGet](https://img.shields.io/nuget/v/ValueGetter.svg)](https://www.nuget.org/packages/ValueGetter)
+![](https://img.shields.io/nuget/dt/ValueGetter.svg)
+
+---
+
 ### Feature:
 - Mini (you can just copy/paste a [ValueGetter.cs](ValueGetter/ValueGetter.cs) file to project)
 - Without dependency
 - Faster Than Reflection GeValue (Click To [BenchmarkDotNet])
 - Support `net40;net45;netstandard2.0;` frameworks
+
+### Installation
+
+You can install the package [from NuGet](https://www.nuget.org/packages/ValueGetter) using the Visual Studio Package Manager or NuGet UI:
+
+```cmd
+PM> install-package ValueGetter
+```
+
+or the `dotnet` command line:
+
+```cmd
+dotnet add package ValueGetter
+```
 
 ### GetStart:
 

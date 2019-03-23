@@ -62,8 +62,8 @@ namespace ValueGetter
             var instance = Expression.Parameter(typeof(TReturn), "i");
             var convert = Expression.TypeAs(instance, prop.DeclaringType);
             var property = Expression.Property(convert, prop);
-            var convert2 = Expression.TypeAs(property, typeof(TReturn));
-            var lambda = Expression.Lambda<Func<TParam, TReturn>>(convert2, instance);
+            var cast = Expression.TypeAs(property, typeof(TReturn));
+            var lambda = Expression.Lambda<Func<TParam, TReturn>>(cast, instance);
             return lambda.Compile();
         }
     }
