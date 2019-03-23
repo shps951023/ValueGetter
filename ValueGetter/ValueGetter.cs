@@ -19,8 +19,8 @@ namespace ValueGetter
         /// Compiler Method Like:
         /// <code>string GetterFunction(object i) => (i as MyClass).MyProperty1.ToString() ; </code>
         /// </summary>
-        public static string GetToStringValue<T>(this PropertyInfo propertyInfo, T instance) 
-            => ValueGetterCache<T, string>.GetOrAddToStringFuntionCache(propertyInfo)(instance);
+        public static string GetToStringValue<T>(this PropertyInfo propertyInfo, T instance)
+            => instance != null ? ValueGetterCache<T, string>.GetOrAddToStringFuntionCache(propertyInfo)(instance) : null;
     }
 
     //GetObjectValue generic with object version, this arrangement can avoid Compiler exception error
@@ -38,7 +38,7 @@ namespace ValueGetter
         /// <code>object GetterFunction(object i) => (i as MyClass).MyProperty1 as object ; </code>
         /// </summary>
         public static object GetObjectValue<T>(this PropertyInfo propertyInfo, T instance) 
-            => ValueGetterCache<T, object>.GetOrAddFunctionCache(propertyInfo)(instance);
+            => instance!=null?ValueGetterCache<T, object>.GetOrAddFunctionCache(propertyInfo)(instance):null;
     }
 }
 

@@ -78,5 +78,18 @@ namespace ValueGetterTests
                 Assert.AreEqual("test", result2["MyProperty2"]);
             }
         }
+
+        [TestMethod]
+        public void PropNull()
+        {
+            MyClass data = null;
+            var props = typeof(MyClass).GetProperties();
+            foreach (var prop in props)
+            {
+                //var result = prop.GetValue(data); //System.Reflection.TargetException: 'Non-static method requires a target.'
+                var result =  prop.GetObjectValue(data);
+            }
+            
+        }
     }
 }
