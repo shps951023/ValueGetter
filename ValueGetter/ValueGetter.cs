@@ -11,17 +11,23 @@ namespace ValueGetter
     {
         /// <summary>
         /// Compiler Method Like:
-        /// <code>string GetterFunction(object i) => (i as MyClass).MyProperty1.ToString() ; </code>
+        /// <code>
+        ///     string GetterToStringFunction(object i) => GetterFunction(i).ToString() ; 
+        ///     object GetterFunction(object i) => (i as MyClass).MyProperty1 as object ;
+        /// </code>
         /// </summary>
         public static Dictionary<string, string> GetToStringValues<T>(this T instance) 
             => instance?.GetType().GetPropertiesFromCache().ToDictionary(key => key.Name, value => value.GetToStringValue<T>(instance));
 
         /// <summary>
         /// Compiler Method Like:
-        /// <code>string GetterFunction(object i) => (i as MyClass).MyProperty1.ToString() ; </code>
+        /// <code>
+        ///     string GetterToStringFunction(object i) => GetterFunction(i).ToString() ; 
+        ///     object GetterFunction(object i) => (i as MyClass).MyProperty1 as object ;
+        /// </code>
         /// </summary>
         public static string GetToStringValue<T>(this PropertyInfo propertyInfo, T instance)
-            => instance != null ? ValueGetterCache<T, string>.GetOrAddToStringFuntionCache(propertyInfo)(instance) : null;
+            => instance != null ? ValueGetterCache<T, object>.GetOrAddFunctionCache(propertyInfo)(instance)?.ToString() : null;
     }
     
     public static partial class ValueGetter
@@ -43,7 +49,6 @@ namespace ValueGetter
 
     internal partial class ValueGetterCache<TParam, TReturn>
     {
-        private static readonly ConcurrentDictionary<int, Func<TParam, TReturn>> ToStringFunctions = new ConcurrentDictionary<int, Func<TParam, TReturn>>();
         private static readonly ConcurrentDictionary<int, Func<TParam, TReturn>> Functions = new ConcurrentDictionary<int, Func<TParam, TReturn>>();
     }
 
@@ -64,31 +69,6 @@ namespace ValueGetter
             var property = Expression.Property(convert, prop);
             var cast = Expression.TypeAs(property, typeof(TReturn));
             var lambda = Expression.Lambda<Func<TParam, TReturn>>(cast, instance);
-            return lambda.Compile();
-        }
-    }
-
-    internal partial class ValueGetterCache<TParam, TReturn>
-    {
-        internal static Func<TParam, TReturn> GetOrAddToStringFuntionCache(PropertyInfo propertyInfo)
-        {
-            var key = propertyInfo.MetadataToken;
-            if (ToStringFunctions.TryGetValue(key, out Func<TParam, TReturn> func))
-                return func;
-            return (ToStringFunctions[key] = GetCastObjectAndToStringFunction(propertyInfo));
-        }
-
-        private static Func<TParam, TReturn> GetCastObjectAndToStringFunction(PropertyInfo prop)
-        {
-            var propType = prop.PropertyType;
-            var toStringMethod = propType.GetMethods(BindingFlags.Public | BindingFlags.Instance).Where(p => p.Name == "ToString").First();
-
-            var instance = Expression.Parameter(typeof(TParam), "i");
-            var convert = Expression.TypeAs(instance, prop.DeclaringType);
-            var property = Expression.Property(convert, prop);
-            var tostring = Expression.Call(property, toStringMethod);
-            var lambda = Expression.Lambda<Func<TParam, TReturn>>(tostring, instance);
-
             return lambda.Compile();
         }
     }

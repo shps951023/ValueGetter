@@ -112,7 +112,7 @@ namespace ValueGetterTests
         }
 
         [TestMethod]
-        public void PropNull()
+        public void IstanceIsNull()
         {
             MyClass data = null;
             var props = typeof(MyClass).GetProperties();
@@ -121,6 +121,14 @@ namespace ValueGetterTests
                 //var result = prop.GetValue(data); //System.Reflection.TargetException: 'Non-static method requires a target.'
                 var result =  prop.GetObjectValue(data);
             }
+        }
+
+        [TestMethod]
+        public void PropertyValueIsNull()
+        {
+            MyClass data = new MyClass { MyProperty2=null} ;
+            var result = data.GetToStringValues()["MyProperty2"] ; //System.NullReferenceException: 'Object reference not set to an instance of an object.'
+            Assert.IsNull(result);
         }
     }
 }
