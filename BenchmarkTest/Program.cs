@@ -32,7 +32,7 @@ namespace BenchmarkTest
         public void ReflectionToString() => Data.Select(instance => {
             var type = instance.GetType();
             var props = type.GetProperties();
-            return props.ToDictionary(key => key.Name, value => value.GetValue(instance).ToString());
+            return props.ToDictionary(key => key.Name, value => value.GetValue(instance)?.ToString());
         }).ToList();
 
         [Benchmark()]
