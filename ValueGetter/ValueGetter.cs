@@ -16,7 +16,7 @@ namespace ValueGetter
         ///     object GetterFunction(object i) => (i as MyClass).MyProperty1 as object ;
         /// </code>
         /// </summary>
-        public static Dictionary<string, string> GetToStringValues<T>(this T instance) 
+        public static Dictionary<string, string> GetToStringValues<T>(this T instance)
             => instance?.GetType().GetPropertiesFromCache().ToDictionary(key => key.Name, value => value.GetToStringValue<T>(instance));
 
         /// <summary>
@@ -29,7 +29,7 @@ namespace ValueGetter
         public static string GetToStringValue<T>(this PropertyInfo propertyInfo, T instance)
             => instance != null ? ValueGetterCache<T, object>.GetOrAddFunctionCache(propertyInfo)(instance)?.ToString() : null;
     }
-    
+
     public static partial class ValueGetter
     {
         /// <summary>
@@ -43,8 +43,8 @@ namespace ValueGetter
         /// Compiler Method Like:
         /// <code>object GetterFunction(object i) => (i as MyClass).MyProperty1 as object ; </code>
         /// </summary>
-        public static object GetObjectValue<T>(this PropertyInfo propertyInfo, T instance) 
-            => instance!=null?ValueGetterCache<T, object>.GetOrAddFunctionCache(propertyInfo)(instance):null;
+        public static object GetObjectValue<T>(this PropertyInfo propertyInfo, T instance)
+            => instance != null ? ValueGetterCache<T, object>.GetOrAddFunctionCache(propertyInfo)(instance) : null;
     }
 
     internal partial class ValueGetterCache<TParam, TReturn>
@@ -82,6 +82,12 @@ namespace ValueGetter
             if (TypePropertiesCache.TryGetValue(type.TypeHandle, out IList<PropertyInfo> pis))
                 return pis;
             return TypePropertiesCache[type.TypeHandle] = type.GetProperties().ToList();
+        }
+
+        public static IList<PropertyInfo> GetPropertiesFromCache(this object instance)
+        {
+            if (instance == null) throw new ArgumentNullException(nameof(instance));
+            return instance.GetType().GetPropertiesFromCache();
         }
     }
 }

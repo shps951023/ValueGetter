@@ -130,5 +130,18 @@ namespace ValueGetterTests
             var result = data.GetToStringValues()["MyProperty2"] ; //System.NullReferenceException: 'Object reference not set to an instance of an object.'
             Assert.IsNull(result);
         }
+
+        //[TestMethod]
+        public void DynamicTest()
+        {
+            dynamic data = new System.Dynamic.ExpandoObject();
+            data.MyProperty1 = 123;
+            data.MyProperty2 = "test";
+
+            var result = data.GetObjectValues(); //Microsoft.CSharp.RuntimeBinder.RuntimeBinderException: ''System.Dynamic.ExpandoObject' does not contain a definition for 'GetObjectValues''
+
+            Assert.AreEqual(123, result["MyProperty1"]);
+            Assert.AreEqual("test", result["MyProperty2"]);
+        }
     }
 }
