@@ -15,21 +15,22 @@
     <PackageProjectUrl>https://github.com/shps951023/ValueGetter</PackageProjectUrl>
     <PackageIconUrl>https://raw.githubusercontent.com/shps951023/ImageHosting/master/img/2019-01-17.13.18.32-image.png</PackageIconUrl>
 
-    <AssemblyVersion>1.0.2</AssemblyVersion>
-    <FileVersion>1.0.2</FileVersion>
-    <Version>1.0.2</Version>
+    <AssemblyVersion>1.0.3</AssemblyVersion>
+    <FileVersion>1.0.3</FileVersion>
+    <Version>1.0.3</Version>
     <PackageId>ValueGetter</PackageId>
     <NeutralLanguage>en</NeutralLanguage>
     <Product>ValueGetter</Product>
     <PackageTags>ValueGetter,GetValue,Mini,Easy</PackageTags>
     <RepositoryType>Github</RepositoryType>
-    <PackageReleaseNotes>
-      ### version 1.0.2
-      - [X] Remove .netstandard 2.0 third party package reference
+    <PackageReleaseNotes>### version 1.0.3
+- [X] Fix GetPropertiesFromCache : Filter Can Not Read or Static Property
 
-      ### version 1.0.1
-      - [X] Fix [If Property Value Is Null GetToStringValue will get System.NullReferenceException · Issue #1 ](https://github.com/shps951023/ValueGetter/issues/1)
-    </PackageReleaseNotes>
+### version 1.0.2
+- [X] Remove .netstandard 2.0 third party package reference
+
+### version 1.0.1
+- [X] Fix [If Property Value Is Null GetToStringValue will get System.NullReferenceException · Issue #1 ](https://github.com/shps951023/ValueGetter/issues/1)</PackageReleaseNotes>
   </PropertyGroup>
 
 </Project>
