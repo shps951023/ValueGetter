@@ -12,6 +12,8 @@ namespace ValueGetterTests
     {
         public int MyProperty1 { get; set; }
         public string MyProperty2 { get; set; }
+        public string MyProperty3 { set { } }
+        public static string MyProperty4 { get; set; }
     }
 
     [Microsoft.VisualStudio.TestTools.UnitTesting.TestClass]
@@ -129,6 +131,14 @@ namespace ValueGetterTests
             MyClass data = new MyClass { MyProperty2=null} ;
             var result = data.GetToStringValues()["MyProperty2"] ; //System.NullReferenceException: 'Object reference not set to an instance of an object.'
             Assert.IsNull(result);
+        }
+
+        [TestMethod]
+        public void FiliterCanNotReadOrStaticProperty()
+        {
+            MyClass data = new MyClass { MyProperty1 = 123,MyProperty2="123" };
+            var result = data.GetPropertiesFromCache();
+            Assert.AreEqual(2,result.Count);
         }
 
         //[TestMethod]
