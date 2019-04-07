@@ -81,7 +81,7 @@ namespace ValueGetter
         {
             if (TypePropertiesCache.TryGetValue(type.TypeHandle, out IList<PropertyInfo> pis))
                 return pis;
-            return TypePropertiesCache[type.TypeHandle] = type.GetProperties().ToList();
+            return TypePropertiesCache[type.TypeHandle] = type.GetProperties(BindingFlags.Public | BindingFlags.Instance).Where(w => w.CanRead).ToList();
         }
 
         public static IList<PropertyInfo> GetPropertiesFromCache(this object instance)
