@@ -50,10 +50,7 @@ namespace ValueGetter
     internal partial class ValueGetterCache<TParam, TReturn>
     {
         private static readonly ConcurrentDictionary<int, Func<TParam, TReturn>> Functions = new ConcurrentDictionary<int, Func<TParam, TReturn>>();
-    }
 
-    internal partial class ValueGetterCache<TParam, TReturn>
-    {
         internal static Func<TParam, TReturn> GetOrAddFunctionCache(PropertyInfo propertyInfo)
         {
             var key = propertyInfo.MetadataToken;
@@ -76,6 +73,7 @@ namespace ValueGetter
     public static partial class PropertyCacheHelper
     {
         private static readonly Dictionary<RuntimeTypeHandle, IList<PropertyInfo>> TypePropertiesCache = new Dictionary<RuntimeTypeHandle, IList<PropertyInfo>>();
+        private static readonly Dictionary<RuntimeTypeHandle, IDictionary<string, PropertyInfo>> TypePropertiesDictionaryCache = new Dictionary<RuntimeTypeHandle, IDictionary<string, PropertyInfo>>();
 
         public static IList<PropertyInfo> GetPropertiesFromCache(this Type type)
         {
@@ -88,6 +86,20 @@ namespace ValueGetter
         {
             if (instance == null) throw new ArgumentNullException(nameof(instance));
             return instance.GetType().GetPropertiesFromCache();
+        }
+
+        public static IDictionary<string, PropertyInfo> GetPropertiesDictionaryFromCache(this Type type)
+        {
+            if (TypePropertiesDictionaryCache.TryGetValue(type.TypeHandle, out IDictionary<string, PropertyInfo> pis))
+                return pis;
+            return TypePropertiesDictionaryCache[type.TypeHandle] = type.GetProperties(BindingFlags.Public | BindingFlags.Instance).Where(w => w.CanRead)
+                .ToDictionary(d => d.Name, d => d);
+        }
+
+        public static IDictionary<string, PropertyInfo> GetPropertiesDictionaryFromCache(this object instance)
+        {
+            if (instance == null) throw new ArgumentNullException(nameof(instance));
+            return instance.GetType().GetPropertiesDictionaryFromCache();
         }
     }
 }

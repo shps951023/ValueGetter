@@ -16,7 +16,7 @@ namespace ValueGetterTests
         public static string MyProperty4 { get; set; }
     }
 
-    [Microsoft.VisualStudio.TestTools.UnitTesting.TestClass]
+    [TestClass]
     public class ValueGetterTests
     {
 
@@ -141,17 +141,12 @@ namespace ValueGetterTests
             Assert.AreEqual(2,result.Count);
         }
 
-        //[TestMethod]
-        public void DynamicTest()
+        [TestMethod]
+        public void GetPropertiesDictionaryFromCache()
         {
-            dynamic data = new System.Dynamic.ExpandoObject();
-            data.MyProperty1 = 123;
-            data.MyProperty2 = "test";
-
-            var result = data.GetObjectValues(); //Microsoft.CSharp.RuntimeBinder.RuntimeBinderException: ''System.Dynamic.ExpandoObject' does not contain a definition for 'GetObjectValues''
-
-            Assert.AreEqual(123, result["MyProperty1"]);
-            Assert.AreEqual("test", result["MyProperty2"]);
+            MyClass data = new MyClass { MyProperty1 = 123, MyProperty2 = "123" };
+            var result = data.GetPropertiesDictionaryFromCache();
+            Assert.AreEqual(2, result.Count);
         }
     }
 }
