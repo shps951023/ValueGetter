@@ -18,9 +18,8 @@
 
 ### Feature:
 - Mini (you can just copy/paste a [ValueGetter.cs](ValueGetter/ValueGetter.cs) file to project)
-- Faster Than Reflection GeValue (Click To [BenchmarkDotNet])
-- Support `net40;net45;netstandard2.0;` frameworks
-- KISS Style
+- Faster Than Reflection GetValue (Click To [BenchmarkDotNet])
+- Support `net40;net45;net451;net46;netstandard2.0;` frameworks
 
 ### Installation
 
@@ -74,6 +73,14 @@ Get single property ToString value of object,return `string` type.
     Assert.AreEqual("123", result);
 ```
 
+#### GetPropertiesFromCache
+
+```C#
+var data = new MyClass { MyProperty1 = 123, MyProperty2 = "123" };
+var props = data.GetPropertiesDictionaryFromCache();  //IDictionary<string, PropertyInfo>
+or
+var props = data.GetPropertiesFromCache(); //IList<PropertyInfo>
+```
 
 ### BenchmarkDotNet 
 
