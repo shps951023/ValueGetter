@@ -137,16 +137,16 @@ namespace ValueGetterTests
         public void FiliterCanNotReadOrStaticProperty()
         {
             MyClass data = new MyClass { MyProperty1 = 123,MyProperty2="123" };
-            var result = data.GetPropertiesFromCache();
-            Assert.AreEqual(2,result.Count);
+            var props = data.GetPropertiesFromCache();
+            Assert.AreEqual(2, props.Count);
         }
 
         [TestMethod]
         public void GetPropertiesDictionaryFromCache()
         {
-            MyClass data = new MyClass { MyProperty1 = 123, MyProperty2 = "123" };
-            var result = data.GetPropertiesDictionaryFromCache();
-            Assert.AreEqual(2, result.Count);
+            var data = new MyClass { MyProperty1 = 123, MyProperty2 = "123" };
+            var props = data.GetPropertiesDictionaryFromCache();
+            Assert.AreEqual(2, props.Count);
         }
     }
 }
