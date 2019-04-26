@@ -1,4 +1,7 @@
-﻿### version 1.0.3
+﻿### version 1.0.4
+- [X] Add GetPropertiesDictionaryFromCache Method : Support IDictionary<string, PropertyInfo>
+
+### version 1.0.3
 - [X] Fix GetPropertiesFromCache : Filter Can Not Read or Static Property
 
 ### version 1.0.2
